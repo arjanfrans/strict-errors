@@ -1,0 +1,32 @@
+{
+  "name": "strict-errors",
+  "version": "0.1.2",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha ./test --recursive --check-leaks --colors",
+    "test:watch": "npm test -- --watch",
+    "cover": "istanbul --include-all-sources cover --root lib _mocha ./test -R --spec -- --recursive",
+    "ci": "npm run cover",
+    "lint": "eslint lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "author": "Arjan Frans <arjanfrans.com@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arjanfrans/strict-errors"
+  },
+  "dependencies": {
+    "ajv": "^4.0.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
+    "eslint": "^2.7.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5"
+  }
+}
