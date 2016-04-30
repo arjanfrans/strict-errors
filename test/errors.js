@@ -32,7 +32,7 @@ const jsonSchema = {
         message: 'Failed example.',
         data: {
             field: {
-                type: 'string',
+                type: 'boolean',
             },
             value: {
                 type: 'number'
@@ -66,17 +66,25 @@ describe('createDefinitions', function () {
         });
 
         it('error can not be created if it is missing a requried property', function () {
+            let error1 = null;
+
             try {
                 createError(ValidationError);
             } catch (err) {
-                expect(err.message).to.equal('Error "ValidationError" is missing required data property "field".');
+                error1 = err;
             }
+
+            expect(error1).to.have.property('message', 'Error "ValidationError" is missing required data property "field".');
+
+            let error2 = null;
 
             try {
                 createError(NestedError);
             } catch (err) {
-                expect(err.message).to.equal('Error "NestedError" is missing required data property "obj.value".');
+                error2 = err;
             }
+
+            expect(error2).to.have.property('message', 'Error "NestedError" is missing required data property "obj.value".');
         });
 
         it('ValidationError is created', function () {
@@ -111,7 +119,7 @@ describe('createDefinitions', function () {
     });
 
     context('schema definitions', function () {
-        const jsonDefinitions = createDefinitions(jsonSchema, { schema: 'text' });
+        const jsonDefinitions = createDefinitions(jsonSchema, { schema: true });
         const ExampleError = jsonDefinitions.ExampleError;
 
         it('definitions created with json schema', function () {
@@ -124,24 +132,28 @@ describe('createDefinitions', function () {
         });
 
         it('error can not be created if a property is incorrect', function () {
+            let error = null;
+
             try {
-                createError(ExampleError);
+                createError(ExampleError, { field: 'hello' });
             } catch (err) {
-                expect(err.message).to.equal('data should have required property \'.field\'');
+                error = err;
             }
+
+            expect(error).to.have.property('message', 'data.field should be boolean');
         });
 
         it('json schema based error is created', function () {
-            const error = createError(ExampleError, { field: 'text' });
+            const error = createError(ExampleError, { field: true, value: 1 });
 
             expect(error.name).to.equal('ExampleError');
             expect(error.message).to.equal('Failed example.');
-            expect(error.data).to.deep.equal({ field: 'text' });
+            expect(error.data).to.deep.equal({ field: true, value: 1 });
             expect(error.toJSON).to.be.a('function');
             expect(error.toJSON()).to.deep.equal({
                 name: 'ExampleError',
                 message: 'Failed example.',
-                data: { field: 'text' }
+                data: { field: true, value: 1 }
             });
             expect(error).to.have.property('stack');
         });
