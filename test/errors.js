@@ -3,7 +3,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const createDefinitions = require('../lib/').createDefinitions;
+const createErrorDefinitions = require('../lib/').createErrorDefinitions;
 const createError = require('../lib/').createError;
 
 const simpleDefinitions = {
@@ -43,9 +43,9 @@ const jsonSchema = {
 };
 
 
-describe('createDefinitions', function () {
+describe('createErrorDefinitions', function () {
     context('simple definitions', function () {
-        const noJsonDefinitions = createDefinitions(simpleDefinitions);
+        const noJsonDefinitions = createErrorDefinitions(simpleDefinitions);
         const ValidationError = noJsonDefinitions.ValidationError;
         const NestedError = noJsonDefinitions.NestedError;
 
@@ -119,7 +119,7 @@ describe('createDefinitions', function () {
     });
 
     context('schema definitions', function () {
-        const jsonDefinitions = createDefinitions(jsonSchema, { schema: true });
+        const jsonDefinitions = createErrorDefinitions(jsonSchema, { schema: true });
         const ExampleError = jsonDefinitions.ExampleError;
 
         it('definitions created with json schema', function () {
