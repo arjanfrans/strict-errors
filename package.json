@@ -1,10 +1,10 @@
 {
   "name": "strict-errors",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/index.js",
   "files": [
-      "dist"
+    "lib"
   ],
   "scripts": {
     "test": "mocha ./test --recursive --check-leaks --colors",
@@ -14,9 +14,6 @@
     "ci": "npm run cover",
     "lint": "eslint lib"
   },
-  "files": [
-    "lib"
-  ],
   "author": "Arjan Frans <arjanfrans.com@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -27,9 +24,9 @@
     "ajv": "^4.0.4"
   },
   "devDependencies": {
-     "babel-cli": "^6.9.0",
-     "babel-preset-es2015": "^6.9.0",
-     "babel-preset-stage-0": "^6.5.0",
+    "babel-cli": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
     "eslint": "^2.7.0",
