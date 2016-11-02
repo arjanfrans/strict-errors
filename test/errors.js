@@ -4,7 +4,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const createErrorDefinitions = require('../lib/').createErrorDefinitions;
-const createError = require('../lib/').createError;
+const StrictError = require('../lib/').StrictError;
 
 const simpleDefinitions = {
     ValidationError: {
@@ -69,7 +69,7 @@ describe('createErrorDefinitions', function () {
             let error1 = null;
 
             try {
-                createError(ValidationError);
+                new StrictError(ValidationError);
             } catch (err) {
                 error1 = err;
             }
@@ -79,7 +79,7 @@ describe('createErrorDefinitions', function () {
             let error2 = null;
 
             try {
-                createError(NestedError);
+                new StrictError(NestedError);
             } catch (err) {
                 error2 = err;
             }
@@ -88,7 +88,7 @@ describe('createErrorDefinitions', function () {
         });
 
         it('ValidationError is created', function () {
-            const error = createError(ValidationError, { field: 'text' });
+            const error = new StrictError(ValidationError, { field: 'text' });
 
             expect(error.name).to.equal('ValidationError');
             expect(error.message).to.equal('Validation failed for property "text".');
@@ -102,8 +102,8 @@ describe('createErrorDefinitions', function () {
             expect(error).to.have.property('stack');
         });
 
-        it('NestedError is created', function () {
-            const error = createError(NestedError, { obj: { value: 'test' } });
+        it('NestedError is created, properties are immutable', function () {
+            const error = new StrictError(NestedError, { obj: { value: 'test' } });
 
             expect(error.name).to.equal('NestedError');
             expect(error.message).to.equal('Error with nested example.');
@@ -115,6 +115,27 @@ describe('createErrorDefinitions', function () {
                 data: { obj: { value: 'test' } }
             });
             expect(error).to.have.property('stack');
+
+            let immutableError = null;
+
+            try {
+                error.message = 'something';
+            } catch (err) {
+                immutableError = err;
+            }
+
+            expect(immutableError.message).to.match(/Cannot assign to read only/);
+
+
+            let immutableError2 = null;
+
+            try {
+                error.data.something = 'something';
+            } catch (err) {
+                immutableError2 = err;
+            }
+
+            expect(immutableError2.message).to.match(/Can\'t add property /);
         });
     });
 
@@ -135,7 +156,7 @@ describe('createErrorDefinitions', function () {
             let error = null;
 
             try {
-                createError(ExampleError, { field: 'hello' });
+                new StrictError(ExampleError, { field: 'hello' });
             } catch (err) {
                 error = err;
             }
@@ -144,7 +165,7 @@ describe('createErrorDefinitions', function () {
         });
 
         it('json schema based error is created', function () {
-            const error = createError(ExampleError, { field: true, value: 1 });
+            const error = new StrictError(ExampleError, { field: true, value: 1 });
 
             expect(error.name).to.equal('ExampleError');
             expect(error.message).to.equal('Failed example.');
