@@ -27,22 +27,6 @@ const simpleDefinitions = {
     }
 };
 
-const jsonSchema = {
-    ExampleError: {
-        message: 'Failed example.',
-        data: {
-            field: {
-                type: 'boolean',
-            },
-            value: {
-                type: 'number'
-            }
-        },
-        required: ['field']
-    }
-};
-
-
 describe('createErrorDefinitions', function () {
     context('simple definitions', function () {
         const noJsonDefinitions = createErrorDefinitions(simpleDefinitions);
@@ -136,47 +120,6 @@ describe('createErrorDefinitions', function () {
             }
 
             expect(immutableError2.message).to.match(/Can\'t add property /);
-        });
-    });
-
-    context('schema definitions', function () {
-        const jsonDefinitions = createErrorDefinitions(jsonSchema, { schema: true });
-        const ExampleError = jsonDefinitions.ExampleError;
-
-        it('definitions created with json schema', function () {
-            expect(jsonDefinitions).to.have.property('ExampleError');
-            expect(ExampleError.name).to.equal('ExampleError');
-            expect(ExampleError.message).to.equal('Failed example.');
-            expect(ExampleError.data).to.deep.equal(jsonSchema.ExampleError.data);
-            expect(ExampleError.validate).to.be.a('function');
-            expect(ExampleError.required).to.deep.equal(jsonSchema.ExampleError.required);
-        });
-
-        it('error can not be created if a property is incorrect', function () {
-            let error = null;
-
-            try {
-                new StrictError(ExampleError, { field: 'hello' });
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).to.have.property('message', 'data.field should be boolean');
-        });
-
-        it('json schema based error is created', function () {
-            const error = new StrictError(ExampleError, { field: true, value: 1 });
-
-            expect(error.name).to.equal('ExampleError');
-            expect(error.message).to.equal('Failed example.');
-            expect(error.data).to.deep.equal({ field: true, value: 1 });
-            expect(error.toJSON).to.be.a('function');
-            expect(error.toJSON()).to.deep.equal({
-                name: 'ExampleError',
-                message: 'Failed example.',
-                data: { field: true, value: 1 }
-            });
-            expect(error).to.have.property('stack');
         });
     });
 });

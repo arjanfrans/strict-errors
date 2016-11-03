@@ -3,48 +3,6 @@
 const Ajv = require('ajv');
 const ajv = Ajv({ allErrors: true });
 
-function ajvError (errors) {
-    const err = new Error('Error validation failed.');
-
-    err.message = ajv.errorsText(errors, {
-        separator: '\n  - ',
-        dataVar: 'data'
-    });
-
-    return err;
-}
-
-function createSchemaValidators (definitions) {
-    const validators = {};
-
-    for (const errorName of Object.keys(definitions)) {
-        const definition = definitions[errorName];
-
-        const schema = {
-            type: 'object',
-            properties: definition.data || {},
-        };
-
-        if (definition.required) {
-            schema.required = definition.required;
-        }
-
-        const validate = ajv.compile(schema);
-
-        validators[errorName] = function (data) {
-            const isValid = validate(data || {});
-
-            if (isValid) {
-                return true;
-            }
-
-            throw ajvError(validate.errors);
-        };
-    }
-
-    return validators;
-}
-
 function createSimpleValidators (definitions) {
     const validators = {};
 
@@ -75,17 +33,11 @@ function createSimpleValidators (definitions) {
     return validators;
 }
 
-function createDefinitions (definitions, options) {
+function createDefinitions (definitions, options = {}) {
     options = options || {};
 
     const errorDefinitions = {};
-    let validators = null;
-
-    if (options.schema) {
-        validators = createSchemaValidators(definitions);
-    } else {
-        validators = createSimpleValidators(definitions);
-    }
+    const validators = createSimpleValidators(definitions);
 
     const validateTrue = () => true;
 
