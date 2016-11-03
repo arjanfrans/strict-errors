@@ -3,8 +3,8 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const createErrorDefinitions = require('../lib/').createErrorDefinitions;
-const StrictError = require('../lib/').StrictError;
+const createErrorDefinitions = require('../src/').createErrorDefinitions;
+const StrictError = require('../src/').StrictError;
 
 const simpleDefinitions = {
     ValidationError: {
