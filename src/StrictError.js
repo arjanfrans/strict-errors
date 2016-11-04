@@ -37,7 +37,7 @@ class StrictError extends Error {
             name: this.name,
             message: this.message,
             data: this.data
-        }
+        };
     }
 }
 

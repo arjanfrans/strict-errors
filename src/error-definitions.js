@@ -1,8 +1,3 @@
-'use strict';
-
-const Ajv = require('ajv');
-const ajv = Ajv({ allErrors: true });
-
 function createSimpleValidators (definitions) {
     const validators = {};
 
@@ -33,9 +28,7 @@ function createSimpleValidators (definitions) {
     return validators;
 }
 
-function createDefinitions (definitions, options = {}) {
-    options = options || {};
-
+function createDefinitions (definitions) {
     const errorDefinitions = {};
     const validators = createSimpleValidators(definitions);
 
