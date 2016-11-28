@@ -7,8 +7,7 @@
 [![devDependency Status](https://david-dm.org/arjanfrans/strict-errors/dev-status.svg)](https://david-dm.org/arjanfrans/strict-errors#info=devDependencies)
 
 This module provides a simple framework for defining your own errors. 
-Error that you define can double as a documentation about errors.
-
+Error that you define can double as a documentation.
 
 ## Installation
 
@@ -20,8 +19,4 @@ You must use node version 4.2 or higher.
 
 ## Usage
 
-See [tests](./test/errors) on how it works.
-
-// TODO
-
-
+See [tests](https://github.com/arjanfrans/strict-errors/blob/master/test/errors.js) on how it works.
