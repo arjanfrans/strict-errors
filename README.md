@@ -19,4 +19,4 @@ You must use node version 4.2 or higher.
 
 ## Usage
 
-See [tests](https://github.com/arjanfrans/strict-errors/blob/master/test/errors.js) on how it works.
+See [example](./example) and [tests](./test/errors.js).
