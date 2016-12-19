@@ -1,19 +1,23 @@
-function createSimpleValidators (definitions) {
+function getProperty (initial, key) {
+    return key.split('.').reduce((obj, index) => {
+        if (obj) {
+            return obj[index];
+        }
+
+        return null;
+    }, initial);
+}
+
+function createValidators (definitions) {
     const validators = {};
 
     for (const errorName of Object.keys(definitions)) {
         const definition = definitions[errorName];
 
-        validators[errorName] = function (data) {
+        validators[errorName] = (data) => {
             if (definition.required) {
                 for (const key of definition.required) {
-                    const value = key.split('.').reduce((obj, index) => {
-                        if (obj) {
-                            return obj[index];
-                        }
-
-                        return null;
-                    }, data);
+                    const value = getProperty(data, key);
 
                     if (value === null || typeof value === 'undefined') {
                         throw new Error(`Error "${errorName}" is missing required data property "${key}".`);
@@ -28,23 +32,21 @@ function createSimpleValidators (definitions) {
     return validators;
 }
 
-function createDefinitions (definitions) {
+function createDefinitions (definitions, options = {}) {
+    const validate = typeof options.validate !== 'undefined' ? options.validate : true;
     const errorDefinitions = {};
-    const validators = createSimpleValidators(definitions);
-
-    const validateTrue = () => true;
+    const validators = createValidators(definitions);
 
     for (const errorName of Object.keys(definitions)) {
         const definition = definitions[errorName];
 
-        errorDefinitions[errorName] = Object.assign({
+        errorDefinitions[errorName] = {
+            ...definition,
             name: errorName
-        }, definition);
+        };
 
-        if (validators && validators[errorName]) {
+        if (validate && validators[errorName]) {
             errorDefinitions[errorName].validate = validators[errorName];
-        } else {
-            errorDefinitions[errorName].validate = validateTrue;
         }
     }
 

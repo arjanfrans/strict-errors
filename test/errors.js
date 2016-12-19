@@ -28,12 +28,12 @@ const simpleDefinitions = {
 };
 
 describe('createErrorDefinitions', function () {
-    context('simple definitions', function () {
+    context('with validation', function () {
         const noJsonDefinitions = createErrorDefinitions(simpleDefinitions);
         const ValidationError = noJsonDefinitions.ValidationError;
         const NestedError = noJsonDefinitions.NestedError;
 
-        it('definitions created without json schema', function () {
+        it('definitions created', function () {
             expect(noJsonDefinitions).to.have.property('ValidationError');
             expect(ValidationError.name).to.equal('ValidationError');
             expect(ValidationError.message).to.be.a('function');
@@ -120,6 +120,23 @@ describe('createErrorDefinitions', function () {
             }
 
             expect(immutableError2.message).to.match(/Can\'t add property /);
+        });
+    });
+
+    context('without validation', function () {
+        const noJsonDefinitions = createErrorDefinitions(simpleDefinitions, { validate: false });
+        const ValidationError = noJsonDefinitions.ValidationError;
+
+        it('no error is thrown when missing required data', function () {
+            let error1 = null;
+
+            try {
+                new StrictError(ValidationError);
+            } catch (err) {
+                error1 = err;
+            }
+
+            expect(error1).to.not.exist;
         });
     });
 });

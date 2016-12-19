@@ -15,8 +15,6 @@ Error that you define can double as a documentation.
 npm install --save strict-errors
 ```
 
-You must use node version 4.2 or higher.
-
 ## Usage
 
 See [example](./example) and [tests](./test/errors.js).
