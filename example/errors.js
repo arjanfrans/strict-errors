@@ -1,5 +1,3 @@
-'use strict';
-
 const strictErrors = require('../src/');
 
 const errors = {
@@ -13,10 +11,13 @@ const errors = {
         // Document additional data fields that can provide error information
         data: {
             index: 'Index of array where error occurred',
+            nested: {
+                example: 'yes'
+            }
         },
 
         // Required error information
-        required: [ 'index' ]
+        required: ['index']
     }
 };
 

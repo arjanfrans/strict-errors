@@ -11,10 +11,11 @@ function getProperty (initial, key) {
 function createValidators (definitions) {
     const validators = {};
 
-    for (const errorName of Object.keys(definitions)) {
-        const definition = definitions[errorName];
+    for (const errorKey of Object.keys(definitions)) {
+        const definition = definitions[errorKey];
+        const errorName = definition.name || errorKey;
 
-        validators[errorName] = (data) => {
+        validators[errorKey] = (data) => {
             if (definition.required) {
                 for (const key of definition.required) {
                     const value = getProperty(data, key);
@@ -37,16 +38,16 @@ function createDefinitions (definitions, options = {}) {
     const errorDefinitions = {};
     const validators = createValidators(definitions);
 
-    for (const errorName of Object.keys(definitions)) {
-        const definition = definitions[errorName];
+    for (const errorKey of Object.keys(definitions)) {
+        const definition = definitions[errorKey];
 
-        errorDefinitions[errorName] = {
+        errorDefinitions[errorKey] = {
             ...definition,
-            name: errorName
+            name: definition.name || errorKey
         };
 
-        if (validate && validators[errorName]) {
-            errorDefinitions[errorName].validate = validators[errorName];
+        if (validate && validators[errorKey]) {
+            errorDefinitions[errorKey].validate = validators[errorKey];
         }
     }
 
