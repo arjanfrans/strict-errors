@@ -1,20 +1,3 @@
-function updateObjectValues (obj, result = {}, parentKey = '') {
-    for (const key of Object.keys(obj)) {
-        const parentPath = `${parentKey === '' ? '' : '.'}${key}`;
-
-        if (obj[key] && typeof obj[key] === 'object') {
-            result[key] = {};
-            updateObjectValues(obj[key], result[key], parentPath);
-        } else if (parentKey !== '') {
-            result[key] = `{${parentKey}.${key}}`;
-        } else {
-            result[key] = `{${key}}`;
-        }
-    }
-
-    return result;
-}
-
 function errorsToJson (errorDefinitions) {
     return Object.keys(errorDefinitions).map((name) => {
         const definition = errorDefinitions[name];
@@ -23,21 +6,11 @@ function errorsToJson (errorDefinitions) {
             name = definition.name;
         }
 
-        let message = definition.message;
+        const result = Object.assign({}, definition);
 
-        if (typeof message === 'function') {
-            let data = {};
-
-            if (definition.data) {
-                data = updateObjectValues(definition.data);
-            }
-
-            message = message(data);
+        if (typeof definition.message === 'function') {
+            delete result.message;
         }
-
-        const result = Object.assign({}, definition, {
-            message,
-        });
 
         delete result.validate;
 

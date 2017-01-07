@@ -113,7 +113,6 @@ describe('createErrorDefinitions', function () {
         assert.deepStrictEqual(json, [
             {
                 name: 'ValidationErrorName',
-                message: 'Validation failed for property "{field}".',
                 data: {
                     field: 'Field where validation failed.',
                     value: 'Value that was given.'
@@ -132,7 +131,6 @@ describe('createErrorDefinitions', function () {
             },
             {
                 name: 'NestedWithFunction',
-                message: '{nested.value}',
                 data: {
                     nested: {
                         value: 'world'
