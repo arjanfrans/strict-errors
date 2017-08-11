@@ -1,4 +1,4 @@
-const strictErrors = require('../src/');
+import { createErrorDefinitions } from '../src'
 
 const errors = {
     Example: {
@@ -6,19 +6,28 @@ const errors = {
         name: 'ExampleError',
 
         // Error message, can be a string or a function that returns a string
-        message: data => `Error at index "${data.index}".`,
+        message: data => `Error at index "${data.index}". Nested prop: ${data.nested.example}`,
 
         // Document additional data fields that can provide error information
-        data: {
-            index: 'Index of array where error occurred',
+        properties: {
+            index: {
+                description: 'Index of array where error occurred',
+                type: 'integer'
+            },
             nested: {
-                example: 'yes'
+                type: 'object',
+                properties: {
+                    example: {
+                        description: 'Nested property example',
+                        type: 'string'
+                    }
+                }
             }
         },
 
         // Required error information
-        required: ['index']
+        required: [ 'index', 'nested' ]
     }
-};
+}
 
-module.exports = strictErrors.createErrorDefinitions(errors);
+export default createErrorDefinitions(errors)

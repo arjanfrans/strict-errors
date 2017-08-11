@@ -1,57 +1,60 @@
-function getProperty (initial, key) {
-    return key.split('.').reduce((obj, index) => {
-        if (obj) {
-            return obj[index];
-        }
-
-        return null;
-    }, initial);
-}
+import Ajv from 'ajv'
 
 function createValidators (definitions) {
-    const validators = {};
+    const ajv = new Ajv({ allErrors: true })
+    const validators = {}
 
     for (const errorKey of Object.keys(definitions)) {
-        const definition = definitions[errorKey];
-        const errorName = definition.name || errorKey;
+        const definition = definitions[errorKey]
+        const errorName = definition.name || errorKey
+
+        const validateSchema = ajv.compile(definition)
 
         validators[errorKey] = (data) => {
-            if (definition.required) {
-                for (const key of definition.required) {
-                    const value = getProperty(data, key);
+            const isValid = validateSchema(data)
 
-                    if (value === null || typeof value === 'undefined') {
-                        throw new Error(`Error "${errorName}" is missing required data property "${key}".`);
-                    }
-                }
+            if (!isValid) {
+                let messages = '  - '
+
+                messages += ajv.errorsText(validateSchema.errors, {
+                    separator: '\n  - '
+                })
+
+                throw new Error(`${errorName} 'data' are invalid:\n${messages}`)
             }
-
-            return true;
-        };
+        }
     }
 
-    return validators;
+    return validators
 }
 
-function createDefinitions (definitions, options = {}) {
-    const validate = typeof options.validate !== 'undefined' ? options.validate : true;
-    const errorDefinitions = {};
-    const validators = createValidators(definitions);
+const DEFAULT_OPTIONS = {
+    validate: true
+}
+
+function createDefinitions (definitions, options = DEFAULT_OPTIONS) {
+    const validate = options.validate
+    const errorDefinitions = {}
+    const validators = createValidators(definitions)
 
     for (const errorKey of Object.keys(definitions)) {
-        const definition = definitions[errorKey];
+        const definition = definitions[errorKey]
 
         errorDefinitions[errorKey] = {
             ...definition,
             name: definition.name || errorKey
-        };
+        }
 
         if (validate && validators[errorKey]) {
-            errorDefinitions[errorKey].validate = validators[errorKey];
+            errorDefinitions[errorKey].validate = validators[errorKey]
+        }
+
+        if (!definition.type) {
+            definition.type = 'object'
         }
     }
 
-    return errorDefinitions;
+    return errorDefinitions
 }
 
-export default createDefinitions;
+export default createDefinitions

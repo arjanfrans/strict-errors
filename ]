@@ -37,14 +37,16 @@ const DEFINITIONS = {
         required: [ 'obj' ]
     },
     NestedWithFunction: {
-        message: data => `Value: ${data.nested.value}`,
+        message: data => {
+            let x = data.nested.value;
+            return `Value: ${data.nested.value}, ${x}`
+        },
         properties: {
             nested: {
                 type: 'object',
                 properties: {
                     value: {
-                        type: 'string',
-                        minLength: 5
+                        type: 'string'
                     }
                 }
             }

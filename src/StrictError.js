@@ -1,11 +1,11 @@
 function deepFreeze (obj) {
-    Object.freeze(obj);
+    Object.freeze(obj)
 
     for (const key of Object.keys(obj)) {
-        const value = obj[key];
+        const value = obj[key]
 
         if (typeof value === 'object') {
-            deepFreeze(value);
+            deepFreeze(value)
         }
     }
 }
@@ -13,23 +13,23 @@ function deepFreeze (obj) {
 class StrictError extends Error {
     constructor (definition, data = {}) {
         if (typeof definition.validate === 'function') {
-            definition.validate(data);
+            definition.validate(data)
         }
 
-        let message = null;
+        let message = null
 
         if (typeof definition.message === 'function') {
-            message = definition.message(data);
+            message = definition.message(data)
         } else {
-            message = definition.message;
+            message = definition.message
         }
 
-        super(message);
+        super(message)
 
-        this.name = definition.name;
-        this.data = data;
+        this.name = definition.name
+        this.data = data
 
-        deepFreeze(this);
+        deepFreeze(this)
     }
 
     toJSON = () => {
@@ -37,8 +37,8 @@ class StrictError extends Error {
             name: this.name,
             message: this.message,
             data: this.data
-        };
+        }
     }
 }
 
-export default StrictError;
+export default StrictError
