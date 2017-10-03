@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const Faker = require('faker')
 const RandExp = require('randexp')
 
 function namespace (root, ns) {
@@ -21,7 +20,6 @@ export default function generate (schema, path = [], depth = 0) {
     if (_.isArray(schema.enum)) {
         return generateEnum(schema, depth)
     }
-    console.log(schema);
 
     const pathString = '${' + path.join('.') + '}';
 
@@ -37,14 +35,13 @@ export default function generate (schema, path = [], depth = 0) {
             // return pathString
             return generateNumber(schema)
         case 'null':
-            // return pathString
             return null
         case 'string':
             // return pathString
             return generateString(schema)
         case 'object':
         default:
-        return generateObject(schema, path, depth)
+            return generateObject(schema, path, depth)
     }
 }
 
@@ -90,20 +87,14 @@ function generateArray (schema, path = [], depth = 0) {
 }
 
 function generateBoolean () {
-    return namespace(Faker, 'random.array_element')([ true, false ])
+    return true;
 }
 
 
 function generateEnum (schema, depth) {
     depth = depth || 0
 
-    const index = generateNumber({
-        minimum: 1,
-        maximum: schema.enum.length
-    })
-
-    const value = schema.enum[index - 1]
-
+    const value = schema.enum[0]
 
     return generate(value, depth + 1)
 }
@@ -121,14 +112,7 @@ function generateNumber (schema) {
     min = (min != null ? min : 1) + (xmin ? 1 : 0)
     max = (max != null ? max : (min + 1e10)) - (xmax ? 1 : 0)
 
-    return namespace(Faker, 'random.number')({
-        min: min,
-        max: max
-    })
-}
-
-function generateNull () {
-    return null
+    return min + (max - min)
 }
 
 function generateObject (schema, path = [], depth = 0) {
@@ -152,13 +136,14 @@ function generateString (schema) {
         return new RandExp(schema.pattern).gen()
     }
 
-    if (schema.faker) {
-        return namespace(Faker, schema.faker)()
-    }
-
     const min = schema.minLength
     const max = schema.maxLength
-    const str = namespace(Faker, 'lorem.words')(min)
+
+    let str = 'hello world'
+
+    while(str.length <= min) {
+        str = str + ' hello world'
+    }
 
     return str.substr(0, (max !== null ? max : str.length))
 }

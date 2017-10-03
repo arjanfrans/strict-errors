@@ -6,7 +6,6 @@ const errorsToJson = strictErrors.errorsToJson
 
 const DEFINITIONS = {
     ValidationError: {
-        name: 'ValidationErrorName',
         message: data => `Validation failed for property "${data.field}".`,
         properties: {
             field: {
@@ -59,7 +58,7 @@ describe('createErrorDefinitions', function () {
         const NestedError = definitions.NestedError
 
         it('definitions created', function () {
-            assert.strictEqual(ValidationError.name, 'ValidationErrorName')
+            assert.strictEqual(ValidationError.name, 'ValidationError')
             assert.strictEqual(typeof ValidationError.message, 'function')
             assert.strictEqual(typeof ValidationError.validate, 'function')
 
@@ -78,7 +77,7 @@ describe('createErrorDefinitions', function () {
             try {
                 throw new StrictError(ValidationError)
             } catch (err) {
-                let expectedMessage = 'ValidationErrorName \'data\' are invalid:'
+                let expectedMessage = 'ValidationError \'data\' are invalid:'
 
                 expectedMessage += '\n  - data should have required property \'field\''
 
@@ -99,12 +98,12 @@ describe('createErrorDefinitions', function () {
         it('ValidationError is created', function () {
             const error = new StrictError(ValidationError, { field: 'text' })
 
-            assert.strictEqual(error.name, 'ValidationErrorName')
+            assert.strictEqual(error.name, 'ValidationError')
             assert.strictEqual(error.message, 'Validation failed for property "text".')
             assert.deepStrictEqual(error.data, { field: 'text' })
             assert.strictEqual(typeof error.toJSON, 'function')
             assert.deepStrictEqual(error.toJSON(), {
-                name: 'ValidationErrorName',
+                name: 'ValidationError',
                 message: 'Validation failed for property "text".',
                 data: { field: 'text' }
             })
@@ -136,17 +135,17 @@ describe('createErrorDefinitions', function () {
         })
     })
 
-    it.only('errors to json', () => {
+    it('errors to json', () => {
         const definitions = createErrorDefinitions(DEFINITIONS, { validate: false })
         const json = errorsToJson(definitions)
 
         assert.deepStrictEqual(json, [
             {
-                name: 'ValidationErrorName',
-                message: 'Validation failed for property "qui consequatur voluptatem".',
+                name: 'ValidationError',
+                message: 'Validation failed for property "hello world".',
                 properties: {
                     field: {
-                        description: 'Field where validation failed',
+                        description: 'Field where validation failed.',
                         type: 'string'
                     },
                     value: {
@@ -162,12 +161,14 @@ describe('createErrorDefinitions', function () {
                 message: 'error with nested example.',
                 properties: {
                     obj: {
+                        type: 'object',
                         properties: {
                             value: {
                                 description: 'value of a nested object',
                                 type: 'string'
                             }
-                        }
+                        },
+                        required: [ 'value' ]
                     }
                 },
                 required: [ 'obj' ],
@@ -175,14 +176,16 @@ describe('createErrorDefinitions', function () {
             },
             {
                 name: 'NestedWithFunction',
-                message: 'error et dolores',
+                message: 'Value: hello world',
                 properties: {
                     nested: {
                         properties: {
                             value: {
-                                type: 'string'
+                                type: 'string',
+                                minLength: 5
                             }
-                        }
+                        },
+                        type: 'object'
                     }
                 },
                 type: 'object'

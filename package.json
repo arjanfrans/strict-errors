@@ -7,10 +7,10 @@
     "dist"
   ],
   "scripts": {
-    "test": "mocha --compilers js:babel-register --recursive --check-leaks --colors --require babel-polyfill",
+    "test": "mocha --require babel-register --recursive --check-leaks --colors --require babel-polyfill",
     "prepublish": "babel -d dist/ src/",
     "test:watch": "npm test -- --watch test src",
-    "cover": "nyc --reporter=html --reporter=text mocha --compilers js:babel-register --require babel-polyfill",
+    "cover": "nyc --reporter=lcov npm test",
     "ci": "npm run cover",
     "lint": "eslint src test"
   },
@@ -22,21 +22,21 @@
   },
   "devDependencies": {
     "@arjanfrans/eslint-config-arjanfrans": "~1",
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.5.2",
-    "babel-register": "^6.24.1",
-    "coveralls": "^2.13.1",
-    "eslint": "^3.19.0",
-    "mocha": "^3.4.2",
-    "nyc": "^10.3.2"
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.8.0",
+    "mocha": "^4.0.0",
+    "nyc": "^11.2.1"
   },
   "dependencies": {
-    "ajv": "^5.2.0",
-    "faker": "^4.1.0",
+    "ajv": "^5.2.3",
     "lodash": "^4.17.4",
-    "randexp": "^0.4.5"
+    "randexp": "^0.4.6"
   }
 }

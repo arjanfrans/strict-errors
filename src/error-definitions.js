@@ -6,7 +6,7 @@ function createValidators (definitions) {
 
     for (const errorKey of Object.keys(definitions)) {
         const definition = definitions[errorKey]
-        const errorName = definition.name || errorKey
+        const errorName = errorKey
 
         const validateSchema = ajv.compile(definition)
 
